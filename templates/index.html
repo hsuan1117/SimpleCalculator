@@ -17,8 +17,10 @@
     <div class="w-full py-2 bg-yellow-500 border-r cursor-pointer hover:bg-yellow-600" id="btnrightbracket">
         )
     </div>
-    <div class="w-full py-2 bg-yellow-500 cursor-pointer hover:bg-yellow-600 flex justify-center items-center" id="btnbackspace"><img class="h-8"
-                                                                                   src="{{ url_for('static', filename='backspace.svg') }}" alt="backspace"/></div>
+    <div class="w-full py-2 bg-yellow-500 cursor-pointer hover:bg-yellow-600 flex justify-center items-center"
+         id="btnbackspace">
+        <img class="h-8" src="{{ url_for('static', filename='backspace.svg') }}" alt="backspace"/>
+    </div>
 </div>
 <div class="flex flex-row bg-gray-500 text-white w-72 text-center text-2xl border-t">
     <div class="w-full py-2 bg-yellow-500 border-r cursor-pointer hover:bg-yellow-600" id="btnplus">+
@@ -95,7 +97,7 @@
     })
     document.querySelector("#btnbackspace").addEventListener("click", () => {
         document.querySelector("#result").innerHTML = "0"
-        formula = formula.substring(0, formula.length-1)
+        formula = formula.substring(0, formula.length - 1)
         document.querySelector("#result").style.color = "white"
         document.querySelector("#formula").innerHTML = formula
     })
