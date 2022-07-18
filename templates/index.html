@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>計算機</title>
+</head>
+<body class="flex flex-col justify-center items-center min-w-screen min-h-screen">
+<div class="bg-gray-700 text-white w-72 text-right text-5xl pr-2 rounded-tr-lg rounded-tl-lg pt-8" id="result">0</div>
+<div class="bg-gray-700 text-white w-72 text-right text-lg py-2 pr-3" id="formula">0</div>
+<div class="flex flex-row bg-gray-500 text-white w-72 text-center text-2xl">
+    <div class="w-full py-2 bg-yellow-500 border-r cursor-pointer hover:bg-yellow-600" id="btnce">CE
+    </div>
+    <div class="w-full py-2 bg-yellow-500 border-r cursor-pointer hover:bg-yellow-600" id="btnleftbracket">(
+    </div>
+    <div class="w-full py-2 bg-yellow-500 border-r cursor-pointer hover:bg-yellow-600" id="btnrightbracket">
+        )
+    </div>
+    <div class="w-full py-2 bg-yellow-500 cursor-pointer hover:bg-yellow-600 flex justify-center items-center" id="btnbackspace"><img class="h-8"
+                                                                                   src="{{ url_for('static', filename='backspace.svg') }}" alt="backspace"/></div>
+</div>
+<div class="flex flex-row bg-gray-500 text-white w-72 text-center text-2xl border-t">
+    <div class="w-full py-2 bg-yellow-500 border-r cursor-pointer hover:bg-yellow-600" id="btnplus">+
+    </div>
+    <div class="w-full py-2 bg-yellow-500 border-r cursor-pointer hover:bg-yellow-600" id="btnminus">-
+    </div>
+    <div class="w-full py-2 bg-yellow-500 border-r cursor-pointer hover:bg-yellow-600" id="btnmutiply">
+        ×
+    </div>
+    <div class="w-full py-2 bg-yellow-500 cursor-pointer hover:bg-yellow-600" id="btndivide">÷</div>
+</div>
+<div class="flex flex-row bg-gray-500 text-white w-72 text-center text-2xl">
+    <div class="w-full py-2 border-r border-gray-600 cursor-pointer hover:bg-gray-600" id="btn7">7</div>
+    <div class="w-full py-2 border-r border-gray-600 cursor-pointer hover:bg-gray-600" id="btn8">8</div>
+    <div class="w-full py-2 cursor-pointer hover:bg-gray-600" id="btn9">9</div>
+</div>
+<div class="flex flex-row bg-gray-500 text-white w-72 text-center text-2xl border-t border-gray-600">
+    <div class="w-full py-2 border-r border-gray-600 cursor-pointer hover:bg-gray-600" id="btn4">4</div>
+    <div class="w-full py-2 border-r border-gray-600 cursor-pointer hover:bg-gray-600" id="btn5">5</div>
+    <div class="w-full py-2 cursor-pointer hover:bg-gray-600" id="btn6">6</div>
+</div>
+<div class="flex flex-row bg-gray-500 text-white w-72 text-center text-2xl border-t border-gray-600">
+    <div class="w-full py-2 border-r border-gray-600 cursor-pointer hover:bg-gray-600" id="btn1">1</div>
+    <div class="w-full py-2 border-r border-gray-600 cursor-pointer hover:bg-gray-600" id="btn2">2</div>
+    <div class="w-full py-2 cursor-pointer hover:bg-gray-600" id="btn3">3</div>
+</div>
+<div class="flex flex-row bg-gray-500 text-white w-72 text-center text-2xl border-t border-gray-600 shadow-lg">
+    <div class="w-1/4 py-2 border-r border-gray-600 cursor-pointer hover:bg-gray-600" id="btn0">0</div>
+    <div class="w-1/4 py-2 cursor-pointer hover:bg-gray-600" id="btndot">.</div>
+    <div class="w-1/2 py-2 bg-yellow-500 cursor-pointer hover:bg-yellow-600" id="btnresult">=</div>
+</div>
+<script>
+    let formula = ""
+    for (let i = 0; i <= 9; i++) {
+        document.querySelector("#btn" + i).addEventListener("click", () => {
+            console.log(i)
+            formula += i
+            document.querySelector("#formula").innerHTML = formula
+        })
+    }
+
+    for (let x of [["dot", "."], ["plus", "+"], ["minus", "-"], ["mutiply", "*"], ["divide", "/"], ["leftbracket", "("], ["rightbracket", ")"],]) {
+        document.querySelector("#btn" + x[0]).addEventListener("click", () => {
+            console.log(x[0] + ": " + x[1])
+            formula += x[1]
+            document.querySelector("#formula").innerHTML = formula
+        })
+    }
+
+    document.querySelector("#btnresult").addEventListener("click", () => {
+        fetch("/calc", {
+            body: JSON.stringify({
+                "formula": formula
+            }),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+        }).then(r => r.json()).then(r => {
+            if (typeof r.result === "string") {
+                document.querySelector("#result").style.color = "red"
+            } else {
+                document.querySelector("#result").style.color = "white"
+            }
+            document.querySelector("#result").innerHTML = r.result
+        })
+    })
+
+    document.querySelector("#btnce").addEventListener("click", () => {
+        document.querySelector("#result").innerHTML = "0"
+        document.querySelector("#formula").innerHTML = "0"
+        document.querySelector("#result").style.color = "white"
+        formula = ""
+    })
+    document.querySelector("#btnbackspace").addEventListener("click", () => {
+        document.querySelector("#result").innerHTML = "0"
+        formula = formula.substring(0, formula.length-1)
+        document.querySelector("#result").style.color = "white"
+        document.querySelector("#formula").innerHTML = formula
+    })
+</script>
+</body>
+</html>
